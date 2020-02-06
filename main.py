@@ -1,15 +1,5 @@
-import os
-import sys
-import time
-import logging
-import requests as req
-from bs4 import BeautifulSoup
+from request_handler import Request_handler
 
-def getChaptersTitle():
-  """
-  It returns a dictionary that contains:
-    key -> chapter's title
-    value -> chapter's urls
-  """
-  
-  pass
+if __name__ == '__main__':
+  handler = Request_handler()
+  handler.print_chapters()
