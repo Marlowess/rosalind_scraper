@@ -47,7 +47,7 @@ class Request_handler():
     """
     It downloades chapters' title and related link to the theory
     """
-    html = self._get_raw_html(links.ROSALIND_BIOINFO_HOME)
+    html = self._get_raw_html(links.ROSALIND_BIOINFO_HOME + 'problems/list-view/')
     self.chapters = self._build_chapters_dictionary(html)
 
   def _build_chapters_dictionary(self, html):
@@ -80,8 +80,15 @@ class Request_handler():
 
     input
     - chapter_num: chapter index
-    """
-    assert len(self.chapters) < chapter_num, self.logger.error('Plase provide a valid chapter')
+    """    
+    assert chapter_num < len(self.chapters.items()), self.logger.error('Plase provide a valid chapter')    
+    chapter_url = list(self.chapters.values())[chapter_num]
+    chapter_theory = self._get_raw_html(links.ROSALIND_BIOINFO_HOME + chapter_url)
+    title = chapter_theory.find_all('h2')[0].text
+    print(title)
 
+    body = chapter_theory.find_all('p')
+    for p in body[:-4]:
+      print(p.text)
 
   
