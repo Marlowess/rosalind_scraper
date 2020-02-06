@@ -9,8 +9,8 @@ class Request_handler():
   def __init__(self):
 
     # A dictionary that contains pairs (chap_title, chap_url)
-    self._download_homepage_data()
     self._init_logger()
+    self._download_homepage_data()    
     
 
   def _init_logger(self):
@@ -24,27 +24,31 @@ class Request_handler():
     # Just as a trial
     self.logger.info('Logger initialized!')
 
-  def _download_homepage_data(self):
+  def _get_raw_html(self, url):
     """
-    It downloades chapters' title and related link to the theory
+    It retrieves and returns the html of the given page
     """
     try:
-      resp = req.get(links.ROSALIND_BIOINFO_HOME)
+      resp = req.get(url)
       resp.raise_for_status()
-      html = BeautifulSoup(resp.content, 'html.parser')
-      self.chapters = self._build_chapters_dictionary(html)
-
+      html = BeautifulSoup(resp.content, 'html.parser')            
     except HTTPError as http_err:
         self.logger.error(f'HTTP error occurred: {http_err}')
         self.logger.info('Bye.')
         sys.exit(-1)
-
     except Exception as err:
         self.logger.error(f'Other error occurred: {err}')  
         sys.exit(-2)  
-    
     else:
-        self.logger.info('Success!')
+        self.logger.info('Download completed!')
+    return html
+
+  def _download_homepage_data(self):
+    """
+    It downloades chapters' title and related link to the theory
+    """
+    html = self._get_raw_html(links.ROSALIND_BIOINFO_HOME)
+    self.chapters = self._build_chapters_dictionary(html)
 
   def _build_chapters_dictionary(self, html):
     """
